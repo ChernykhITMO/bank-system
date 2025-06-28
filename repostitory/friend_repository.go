@@ -1,7 +1,7 @@
 package repostitory
 
 import (
-	"bankSystem/internal/model"
+	"bankSystem/model"
 	"errors"
 	"gorm.io/gorm"
 	"time"

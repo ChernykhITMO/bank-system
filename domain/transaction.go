@@ -1,7 +1,7 @@
 package domain
 
 import (
-	"bankSystem/internal/domain/enums"
+	"bankSystem/domain/enums"
 )
 
 type Transaction struct {

@@ -1,14 +1,14 @@
 package domain
 
 import (
-	"bankSystem/internal/domain/enums"
+	enums2 "bankSystem/domain/enums"
 )
 
 type User struct {
 	Login     string
 	Name      string
-	Sex       enums.Sex
-	HairColor enums.Color
+	Sex       enums2.Sex
+	HairColor enums2.Color
 	Friends   []string
 	Accounts  []Account
 }

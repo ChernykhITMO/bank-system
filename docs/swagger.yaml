@@ -1,0 +1,96 @@
+definitions:
+  dto.AddFriendsRequest:
+    properties:
+      friend_login:
+        type: string
+      user_login:
+        type: string
+    required:
+    - friend_login
+    - user_login
+    type: object
+  dto.CreateUserRequest:
+    properties:
+      hair_color:
+        type: string
+      login:
+        type: string
+      name:
+        type: string
+      sex:
+        type: string
+    required:
+    - hair_color
+    - login
+    - name
+    - sex
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a simple banking API for practice
+  title: Bank SystemAPI
+  version: "1.0"
+paths:
+  /user/add_friend:
+    post:
+      consumes:
+      - application/json
+      description: Add a friend using user login and friend login
+      parameters:
+      - description: Friendship info
+        in: body
+        name: friendship
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AddFriendsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "409":
+          description: Conflict
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Add friend
+      tags:
+      - users
+  /user/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user with login, name, sex and hair color
+      parameters:
+      - description: User to create
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create new user
+      tags:
+      - users
+swagger: "2.0"

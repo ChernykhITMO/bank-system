@@ -1,9 +1,9 @@
 package mapper
 
 import (
-	"bankSystem/internal/domain"
-	"bankSystem/internal/domain/enums"
-	"bankSystem/internal/model"
+	"bankSystem/domain"
+	"bankSystem/domain/enums"
+	"bankSystem/model"
 )
 
 func TransactionToEntity(transaction *domain.Transaction) *model.TransactionEntity {

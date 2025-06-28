@@ -1,28 +1,28 @@
 package service
 
 import (
-	"bankSystem/internal/domain"
-	"bankSystem/internal/domain/enums"
-	"bankSystem/internal/repostitory/interfaces"
+	domain2 "bankSystem/domain"
+	enums2 "bankSystem/domain/enums"
 	"bankSystem/mapper"
+	interfaces2 "bankSystem/repostitory/interfaces"
 	"errors"
 	"fmt"
 	"gorm.io/gorm"
 )
 
 type UserService struct {
-	userRepository   interfaces.UserRepository
-	friendRepository interfaces.FriendRepository
+	userRepository   interfaces2.UserRepository
+	friendRepository interfaces2.FriendRepository
 }
 
-func NewUserService(userRepo interfaces.UserRepository, friendRepo interfaces.FriendRepository) *UserService {
+func NewUserService(userRepo interfaces2.UserRepository, friendRepo interfaces2.FriendRepository) *UserService {
 	return &UserService{
 		userRepository:   userRepo,
 		friendRepository: friendRepo,
 	}
 }
 
-func (s *UserService) NewUser(login string, name string, sex enums.Sex, hairColor enums.Color) (*domain.User, error) {
+func (s *UserService) NewUser(login string, name string, sex enums2.Sex, hairColor enums2.Color) (*domain2.User, error) {
 	u, err := s.userRepository.GetUser(login)
 
 	if err == nil {
@@ -34,13 +34,13 @@ func (s *UserService) NewUser(login string, name string, sex enums.Sex, hairColo
 		return nil, err
 	}
 
-	user := &domain.User{
+	user := &domain2.User{
 		Login:     login,
 		Name:      name,
 		Sex:       sex,
 		Friends:   []string{},
 		HairColor: hairColor,
-		Accounts:  []domain.Account{},
+		Accounts:  []domain2.Account{},
 	}
 
 	entity := mapper.UserToEntity(user)
@@ -80,7 +80,7 @@ func contains(friends []string, login string) bool {
 	return false
 }
 
-func (s *UserService) GetUser(login string) (*domain.User, error) {
+func (s *UserService) GetUser(login string) (*domain2.User, error) {
 	userEntity, err := s.userRepository.GetUser(login)
 	if err != nil {
 		return nil, err

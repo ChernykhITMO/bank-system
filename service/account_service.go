@@ -1,21 +1,21 @@
 package service
 
 import (
-	"bankSystem/internal/domain"
-	"bankSystem/internal/domain/enums"
-	"bankSystem/internal/repostitory/interfaces"
+	domain2 "bankSystem/domain"
+	"bankSystem/domain/enums"
 	"bankSystem/mapper"
+	interfaces2 "bankSystem/repostitory/interfaces"
 	"fmt"
 	"github.com/google/uuid"
 )
 
 type AccountService struct {
-	repoAccount interfaces.AccountRepository
-	repoUser    interfaces.UserRepository
-	repoFriends interfaces.FriendRepository
+	repoAccount interfaces2.AccountRepository
+	repoUser    interfaces2.UserRepository
+	repoFriends interfaces2.FriendRepository
 }
 
-func NewAccountService(repoAcc interfaces.AccountRepository, repoUser interfaces.UserRepository, repoFriends interfaces.FriendRepository) *AccountService {
+func NewAccountService(repoAcc interfaces2.AccountRepository, repoUser interfaces2.UserRepository, repoFriends interfaces2.FriendRepository) *AccountService {
 	return &AccountService{
 		repoAccount: repoAcc,
 		repoUser:    repoUser,
@@ -23,13 +23,13 @@ func NewAccountService(repoAcc interfaces.AccountRepository, repoUser interfaces
 	}
 }
 
-func (s *AccountService) NewUserAccount(user *domain.User) error {
+func (s *AccountService) NewUserAccount(user *domain2.User) error {
 	_, ok := s.repoUser.GetUser(user.Login)
 	if ok != nil {
 		return fmt.Errorf("User not found")
 	}
 
-	account := domain.Account{
+	account := domain2.Account{
 		Id:    uuid.NewString(),
 		Login: user.Login,
 	}
@@ -41,16 +41,16 @@ func (s *AccountService) NewUserAccount(user *domain.User) error {
 	return nil
 }
 
-func (s *AccountService) GetBalance(account *domain.Account) float64 {
+func (s *AccountService) GetBalance(account *domain2.Account) float64 {
 	return account.Balance
 }
 
-func (s *AccountService) Deposit(account *domain.Account, amount float64) error {
+func (s *AccountService) Deposit(account *domain2.Account, amount float64) error {
 	if amount <= 0 {
 		return fmt.Errorf("Amount can't be negavtive")
 	}
 
-	transaction := domain.Transaction{
+	transaction := domain2.Transaction{
 		Id:        uuid.NewString(),
 		Action:    enums.TransactionDeposit,
 		Amount:    amount,
@@ -63,7 +63,7 @@ func (s *AccountService) Deposit(account *domain.Account, amount float64) error 
 	return nil
 }
 
-func (s *AccountService) Withdraw(account *domain.Account, amount float64) error {
+func (s *AccountService) Withdraw(account *domain2.Account, amount float64) error {
 	if account.Balance < amount {
 		return fmt.Errorf("Account doesn't have this amount")
 	}
@@ -71,7 +71,7 @@ func (s *AccountService) Withdraw(account *domain.Account, amount float64) error
 		return fmt.Errorf("Amount can't be negative")
 	}
 
-	transaction := domain.Transaction{
+	transaction := domain2.Transaction{
 		Id:        uuid.NewString(),
 		Action:    enums.TransactionWithdraw,
 		Amount:    amount,
@@ -85,7 +85,7 @@ func (s *AccountService) Withdraw(account *domain.Account, amount float64) error
 	return nil
 }
 
-func (s *AccountService) Transfer(account1, account2 *domain.Account, amount float64) error {
+func (s *AccountService) Transfer(account1, account2 *domain2.Account, amount float64) error {
 	user1Login, user2Login := account1.Login, account2.Login
 
 	isFriends, err := s.repoFriends.AreFriends(user1Login, user2Login)
@@ -99,7 +99,7 @@ func (s *AccountService) Transfer(account1, account2 *domain.Account, amount flo
 		account1.Balance -= (amount + amount*0.03)
 		account2.Balance += amount
 
-		account1.History = append(account1.History, domain.Transaction{
+		account1.History = append(account1.History, domain2.Transaction{
 			Id:     uuid.NewString(),
 			Action: enums.TransactionTransfer,
 			Amount: -(amount + amount*0.03),
@@ -112,7 +112,7 @@ func (s *AccountService) Transfer(account1, account2 *domain.Account, amount flo
 		account1.Balance -= amount
 		account2.Balance += amount
 
-		account1.History = append(account1.History, domain.Transaction{
+		account1.History = append(account1.History, domain2.Transaction{
 			Id:     uuid.NewString(),
 			Action: enums.TransactionTransfer,
 			Amount: -amount,
@@ -124,13 +124,13 @@ func (s *AccountService) Transfer(account1, account2 *domain.Account, amount flo
 		account1.Balance -= amount + amount*0.10
 		account2.Balance += amount
 
-		account1.History = append(account1.History, domain.Transaction{
+		account1.History = append(account1.History, domain2.Transaction{
 			Id:     uuid.NewString(),
 			Action: enums.TransactionTransfer,
 			Amount: -(amount + amount*0.10),
 		})
 	}
-	account2.History = append(account2.History, domain.Transaction{
+	account2.History = append(account2.History, domain2.Transaction{
 		Id:     uuid.NewString(),
 		Action: enums.TransactionTransfer,
 		Amount: amount,

@@ -1,7 +1,7 @@
 package interfaces
 
 import (
-	"bankSystem/internal/model"
+	"bankSystem/model"
 )
 
 type AccountRepository interface {
