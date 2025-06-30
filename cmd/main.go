@@ -3,6 +3,7 @@ package main
 import (
 	"bankSystem/controller"
 	"bankSystem/docs"
+	"bankSystem/model"
 	repostitory2 "bankSystem/repostitory"
 	"bankSystem/service"
 	"github.com/gin-gonic/gin"
@@ -16,7 +17,7 @@ import (
 	"os"
 )
 
-// @title Bank SystemAPI
+// @title Bank System API
 // @version 1.0
 // @description This is a simple banking API for practice
 // @host localhost:8080
@@ -31,11 +32,16 @@ func main() {
 	if err != nil {
 		log.Fatal("Failed to connect to DB:", err)
 	}
+	db.AutoMigrate(&model.UserEntity{}, &model.AccountEntity{}, &model.FriendsEntity{}, &model.TransactionEntity{})
 
 	userRepo := repostitory2.NewPostgresUserRepository(db)
+	accountRepo := repostitory2.NewPostgresAccountRepository(db)
 	friendRepo := repostitory2.NewPostgresFriendRepository(db)
+	transactionRepo := repostitory2.NewPostgresTransactionRepository(db)
 	userService := service.NewUserService(userRepo, friendRepo)
+	accountService := service.NewAccountService(accountRepo, userRepo, friendRepo, transactionRepo)
 	userController := controller.NewUserController(userService)
+	accountController := controller.NewAccountController(accountService)
 
 	router := gin.Default()
 
@@ -44,7 +50,16 @@ func main() {
 	})
 
 	router.POST("/user/create", userController.CreateUser)
-	router.POST("user/add_friend", userController.AddFriend)
+	router.POST("/user/add_friend", userController.AddFriend)
+	router.POST("/user/remove_friend", userController.RemoveFriend)
+	router.GET("/user/get_user", userController.GetUser)
+	router.POST("/account/create", accountController.CreateAccount)
+	router.GET("/account/balance", accountController.GetBalance)
+	router.POST("/account/deposit", accountController.Deposit)
+	router.POST("/account/withdraw", accountController.Withdraw)
+	router.POST("/account/transfer", accountController.Transfer)
+	router.DELETE("/account/delete", accountController.DeleteAccount)
+	router.GET("/account/transactions", accountController.GetTransactions)
 
 	docs.SwaggerInfo.BasePath = "/"
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

@@ -17,7 +17,11 @@ func NewPostgresUserRepository(dataBase *gorm.DB) *PostgresUserRepository {
 
 func (r *PostgresUserRepository) GetUser(login string) (*model.UserEntity, error) {
 	var user model.UserEntity
-	if err := r.db.Where("login = ?", login).First(&user).Error; err != nil {
+	if err := r.db.
+		Preload("Friends").
+		Preload("Accounts").
+		Where("login = ?", login).
+		First(&user).Error; err != nil {
 		return nil, err
 	}
 

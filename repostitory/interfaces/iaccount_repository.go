@@ -7,4 +7,5 @@ import (
 type AccountRepository interface {
 	GetAccount(id string) (*model.AccountEntity, error)
 	SaveAccount(account *model.AccountEntity) error
+	DeleteAccount(id string) error
 }

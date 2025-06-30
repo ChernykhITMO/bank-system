@@ -88,12 +88,17 @@ func (s *UserService) GetUser(login string) (*domain2.User, error) {
 
 	user := mapper.EntityToUser(userEntity)
 
-	friends, err := s.friendRepository.GetFriends(login)
-	if err != nil {
-		return nil, err
-	}
-
-	user.Friends = friends
-
 	return user, nil
+}
+
+func (s *UserService) DeleteUser(login string) error {
+	userEntity, err := s.userRepository.GetUser(login)
+	if err != nil {
+		return err
+	}
+	ok := s.userRepository.DeleteUser(userEntity)
+	if ok != nil {
+		return ok
+	}
+	return nil
 }
