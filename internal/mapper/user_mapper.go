@@ -1,9 +1,9 @@
 package mapper
 
 import (
-	"bankSystem/domain"
-	enums2 "bankSystem/domain/enums"
-	"bankSystem/model"
+	"bankSystem/internal/domain"
+	"bankSystem/internal/domain/constants"
+	"bankSystem/internal/model"
 )
 
 func UserToEntity(user *domain.User) *model.UserEntity {
@@ -40,8 +40,8 @@ func EntityToUser(entity *model.UserEntity) *domain.User {
 	return &domain.User{
 		Login:     entity.Login,
 		Name:      entity.Name,
-		Sex:       enums2.Sex(entity.Sex),
-		HairColor: enums2.Color(entity.HairColor),
+		Sex:       constants.Sex(entity.Sex),
+		HairColor: constants.Color(entity.HairColor),
 		Friends:   friendLogins,
 		Accounts:  accounts,
 	}

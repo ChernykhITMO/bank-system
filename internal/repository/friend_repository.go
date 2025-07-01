@@ -1,11 +1,18 @@
-package repostitory
+package repository
 
 import (
-	"bankSystem/model"
+	"bankSystem/internal/model"
 	"errors"
 	"gorm.io/gorm"
 	"time"
 )
+
+type FriendRepository interface {
+	AddFriends(user, friend string) error
+	RemoveFriend(user, friend string) error
+	AreFriends(user, friend string) (bool, error)
+	GetFriends(login string) ([]string, error)
+}
 
 type PostgresFriendRepository struct {
 	db *gorm.DB

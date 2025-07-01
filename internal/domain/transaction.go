@@ -1,12 +1,12 @@
 package domain
 
 import (
-	"bankSystem/domain/enums"
+	"bankSystem/internal/domain/constants"
 )
 
 type Transaction struct {
 	Id        string
-	Action    enums.TransactionType
+	Action    constants.TransactionType
 	Amount    float64
 	AccountId string
 }

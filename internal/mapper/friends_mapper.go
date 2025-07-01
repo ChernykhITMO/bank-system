@@ -1,6 +1,8 @@
 package mapper
 
-import "bankSystem/model"
+import (
+	"bankSystem/internal/model"
+)
 
 func StringToFriendsEntity(userLogin string, friends []string) []model.FriendsEntity {
 	friendEntities := make([]model.FriendsEntity, 0, len(friends))

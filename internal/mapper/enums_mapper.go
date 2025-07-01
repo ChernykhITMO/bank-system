@@ -1,7 +1,7 @@
 package mapper
 
 import (
-	enums2 "bankSystem/domain/enums"
+	enums2 "bankSystem/internal/domain/constants"
 	"fmt"
 	"strings"
 )
@@ -32,8 +32,4 @@ func StringToEnum(sex, hair string) (enums2.Sex, enums2.Color, error) {
 	}
 
 	return sexEnum, hairEnum, nil
-}
-
-func EnumToString(sex enums2.Sex, hair enums2.Color) (string, string) {
-	return string(sex), string(hair)
 }

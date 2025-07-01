@@ -1,22 +1,23 @@
 package service
 
 import (
-	"bankSystem/domain"
-	"bankSystem/domain/enums"
-	"bankSystem/mapper"
-	"bankSystem/repostitory/interfaces"
+	"bankSystem/internal/domain"
+	"bankSystem/internal/domain/constants"
+	"bankSystem/internal/mapper"
+	"bankSystem/internal/repository"
 	"fmt"
 	"github.com/google/uuid"
 )
 
 type AccountService struct {
-	repoAccount      interfaces.AccountRepository
-	repoUser         interfaces.UserRepository
-	repoFriends      interfaces.FriendRepository
-	repoTransactions interfaces.TransactionRepository
+	repoAccount      repository.AccountRepository
+	repoUser         repository.UserRepository
+	repoFriends      repository.FriendRepository
+	repoTransactions repository.TransactionRepository
 }
 
-func NewAccountService(repoAcc interfaces.AccountRepository, repoUser interfaces.UserRepository, repoFriends interfaces.FriendRepository, repoTransactions interfaces.TransactionRepository) *AccountService {
+func NewAccountService(repoAcc repository.AccountRepository, repoUser repository.UserRepository,
+	repoFriends repository.FriendRepository, repoTransactions repository.TransactionRepository) *AccountService {
 	return &AccountService{
 		repoAccount:      repoAcc,
 		repoUser:         repoUser,
@@ -64,7 +65,7 @@ func (s *AccountService) Deposit(id string, amount float64) error {
 
 	transaction := domain.Transaction{
 		Id:        uuid.NewString(),
-		Action:    enums.TransactionDeposit,
+		Action:    constants.TransactionDeposit,
 		Amount:    amount,
 		AccountId: accountEntity.Id,
 	}
@@ -101,7 +102,7 @@ func (s *AccountService) Withdraw(id string, amount float64) error {
 
 	transaction := domain.Transaction{
 		Id:        uuid.NewString(),
-		Action:    enums.TransactionWithdraw,
+		Action:    constants.TransactionWithdraw,
 		Amount:    amount,
 		AccountId: accountEntity.Id,
 	}
@@ -161,14 +162,14 @@ func (s *AccountService) Transfer(id1, id2 string, amount float64) error {
 
 	outgoingTx := domain.Transaction{
 		Id:        uuid.NewString(),
-		Action:    enums.TransactionTransfer,
+		Action:    constants.TransactionTransfer,
 		Amount:    -total,
 		AccountId: account1.Id,
 	}
 
 	incomingTx := domain.Transaction{
 		Id:        uuid.NewString(),
-		Action:    enums.TransactionTransfer,
+		Action:    constants.TransactionTransfer,
 		Amount:    amount,
 		AccountId: account2.Id,
 	}

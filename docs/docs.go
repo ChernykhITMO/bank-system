@@ -540,7 +540,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "action": {
-                    "$ref": "#/definitions/enums.TransactionType"
+                    "$ref": "#/definitions/constants.TransactionType"
                 },
                 "amount": {
                     "type": "number"
@@ -648,7 +648,7 @@ const docTemplate = `{
                 }
             }
         },
-        "enums.TransactionType": {
+        "constants.TransactionType": {
             "type": "string",
             "enum": [
                 "deposit",

@@ -1,28 +1,28 @@
 package service
 
 import (
-	domain2 "bankSystem/domain"
-	enums2 "bankSystem/domain/enums"
-	"bankSystem/mapper"
-	interfaces2 "bankSystem/repostitory/interfaces"
+	"bankSystem/internal/domain"
+	"bankSystem/internal/domain/constants"
+	"bankSystem/internal/mapper"
+	repository2 "bankSystem/internal/repository"
 	"errors"
 	"fmt"
 	"gorm.io/gorm"
 )
 
 type UserService struct {
-	userRepository   interfaces2.UserRepository
-	friendRepository interfaces2.FriendRepository
+	userRepository   repository2.UserRepository
+	friendRepository repository2.FriendRepository
 }
 
-func NewUserService(userRepo interfaces2.UserRepository, friendRepo interfaces2.FriendRepository) *UserService {
+func NewUserService(userRepo repository2.UserRepository, friendRepo repository2.FriendRepository) *UserService {
 	return &UserService{
 		userRepository:   userRepo,
 		friendRepository: friendRepo,
 	}
 }
 
-func (s *UserService) NewUser(login string, name string, sex enums2.Sex, hairColor enums2.Color) (*domain2.User, error) {
+func (s *UserService) NewUser(login string, name string, sex constants.Sex, hairColor constants.Color) (*domain.User, error) {
 	u, err := s.userRepository.GetUser(login)
 
 	if err == nil {
@@ -34,17 +34,20 @@ func (s *UserService) NewUser(login string, name string, sex enums2.Sex, hairCol
 		return nil, err
 	}
 
-	user := &domain2.User{
+	user := &domain.User{
 		Login:     login,
 		Name:      name,
 		Sex:       sex,
 		Friends:   []string{},
 		HairColor: hairColor,
-		Accounts:  []domain2.Account{},
+		Accounts:  []domain.Account{},
 	}
 
 	entity := mapper.UserToEntity(user)
-	s.userRepository.SaveUser(entity)
+	err = s.userRepository.SaveUser(entity)
+	if err != nil {
+		return nil, err
+	}
 
 	return user, nil
 }
@@ -71,16 +74,7 @@ func (s *UserService) RemoveFriend(userLogin, friendLogin string) error {
 	return s.friendRepository.RemoveFriend(friendLogin, userLogin)
 }
 
-func contains(friends []string, login string) bool {
-	for _, user := range friends {
-		if user == login {
-			return true
-		}
-	}
-	return false
-}
-
-func (s *UserService) GetUser(login string) (*domain2.User, error) {
+func (s *UserService) GetUser(login string) (*domain.User, error) {
 	userEntity, err := s.userRepository.GetUser(login)
 	if err != nil {
 		return nil, err

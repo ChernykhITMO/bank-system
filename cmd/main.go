@@ -1,11 +1,11 @@
 package main
 
 import (
-	"bankSystem/controller"
 	"bankSystem/docs"
-	"bankSystem/model"
-	repostitory2 "bankSystem/repostitory"
-	"bankSystem/service"
+	"bankSystem/internal/handler"
+	model2 "bankSystem/internal/model"
+	"bankSystem/internal/repository"
+	service2 "bankSystem/internal/service"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	swaggerFiles "github.com/swaggo/files"
@@ -32,16 +32,16 @@ func main() {
 	if err != nil {
 		log.Fatal("Failed to connect to DB:", err)
 	}
-	db.AutoMigrate(&model.UserEntity{}, &model.AccountEntity{}, &model.FriendsEntity{}, &model.TransactionEntity{})
+	db.AutoMigrate(&model2.UserEntity{}, &model2.AccountEntity{}, &model2.FriendsEntity{}, &model2.TransactionEntity{})
 
-	userRepo := repostitory2.NewPostgresUserRepository(db)
-	accountRepo := repostitory2.NewPostgresAccountRepository(db)
-	friendRepo := repostitory2.NewPostgresFriendRepository(db)
-	transactionRepo := repostitory2.NewPostgresTransactionRepository(db)
-	userService := service.NewUserService(userRepo, friendRepo)
-	accountService := service.NewAccountService(accountRepo, userRepo, friendRepo, transactionRepo)
-	userController := controller.NewUserController(userService)
-	accountController := controller.NewAccountController(accountService)
+	userRepo := repository.NewPostgresUserRepository(db)
+	accountRepo := repository.NewPostgresAccountRepository(db)
+	friendRepo := repository.NewPostgresFriendRepository(db)
+	transactionRepo := repository.NewPostgresTransactionRepository(db)
+	userService := service2.NewUserService(userRepo, friendRepo)
+	accountService := service2.NewAccountService(accountRepo, userRepo, friendRepo, transactionRepo)
+	userController := handlers.NewUserController(userService)
+	accountController := handlers.handlers.NewAccountController(accountService)
 
 	router := gin.Default()
 

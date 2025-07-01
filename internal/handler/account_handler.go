@@ -1,19 +1,19 @@
-package controller
+package handlers
 
 import (
-	"bankSystem/domain"
-	"bankSystem/dto"
-	"bankSystem/service"
+	"bankSystem/internal/domain"
+	"bankSystem/internal/dto"
+	"bankSystem/internal/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-type AccountController struct {
+type AccountHandler struct {
 	accountService *service.AccountService
 }
 
-func NewAccountController(serviceAccount *service.AccountService) *AccountController {
-	return &AccountController{accountService: serviceAccount}
+func NewAccountController(serviceAccount *service.AccountService) *AccountHandler {
+	return &AccountHandler{accountService: serviceAccount}
 }
 
 // @Summary Create account
@@ -25,7 +25,7 @@ func NewAccountController(serviceAccount *service.AccountService) *AccountContro
 // @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} map[string]interface{}
 // @Router /account/create [post]
-func (ac *AccountController) CreateAccount(c *gin.Context) {
+func (ac *AccountHandler) CreateAccount(c *gin.Context) {
 	var req dto.CreateAccountRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -51,7 +51,7 @@ func (ac *AccountController) CreateAccount(c *gin.Context) {
 // @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} map[string]interface{}
 // @Router /account/balance [get]
-func (ac *AccountController) GetBalance(c *gin.Context) {
+func (ac *AccountHandler) GetBalance(c *gin.Context) {
 	id := c.Query("id")
 	if id == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "id query parameter is required"})
@@ -77,7 +77,7 @@ func (ac *AccountController) GetBalance(c *gin.Context) {
 // @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} map[string]interface{}
 // @Router /account/deposit [post]
-func (ac *AccountController) Deposit(c *gin.Context) {
+func (ac *AccountHandler) Deposit(c *gin.Context) {
 	var req dto.DepWithRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
@@ -102,7 +102,7 @@ func (ac *AccountController) Deposit(c *gin.Context) {
 // @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} map[string]interface{}
 // @Router /account/withdraw [post]
-func (ac *AccountController) Withdraw(c *gin.Context) {
+func (ac *AccountHandler) Withdraw(c *gin.Context) {
 	var req dto.DepWithRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
@@ -127,7 +127,7 @@ func (ac *AccountController) Withdraw(c *gin.Context) {
 // @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} map[string]interface{}
 // @Router /account/transfer [post]
-func (ac *AccountController) Transfer(c *gin.Context) {
+func (ac *AccountHandler) Transfer(c *gin.Context) {
 	var req dto.TransferRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
@@ -152,7 +152,7 @@ func (ac *AccountController) Transfer(c *gin.Context) {
 // @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} map[string]interface{}
 // @Router /account/delete [delete]
-func (ac *AccountController) DeleteAccount(c *gin.Context) {
+func (ac *AccountHandler) DeleteAccount(c *gin.Context) {
 	var req dto.DeleteAccountRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
@@ -178,7 +178,7 @@ func (ac *AccountController) DeleteAccount(c *gin.Context) {
 // @Failure 400 {object} map[string]string
 // @Failure 404 {object} map[string]string
 // @Router /account/transactions [get]
-func (ac *AccountController) GetTransactions(c *gin.Context) {
+func (ac *AccountHandler) GetTransactions(c *gin.Context) {
 	id := c.Query("id")
 	if id == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "id query parameter is required"})

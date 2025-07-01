@@ -1,19 +1,19 @@
-package controller
+package handlers
 
 import (
-	"bankSystem/dto"
-	"bankSystem/mapper"
-	"bankSystem/service"
+	"bankSystem/internal/dto"
+	"bankSystem/internal/mapper"
+	"bankSystem/internal/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-type UserController struct {
+type UserHandler struct {
 	userService *service.UserService
 }
 
-func NewUserController(userService *service.UserService) *UserController {
-	return &UserController{userService: userService}
+func NewUserController(userService *service.UserService) *UserHandler {
+	return &UserHandler{userService: userService}
 }
 
 // @Summary      Create new user
@@ -25,7 +25,7 @@ func NewUserController(userService *service.UserService) *UserController {
 // @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} map[string]interface{}
 // @Router       /user/create [post]
-func (uc *UserController) CreateUser(c *gin.Context) {
+func (uc *UserHandler) CreateUser(c *gin.Context) {
 	var req dto.CreateUserRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -57,7 +57,7 @@ func (uc *UserController) CreateUser(c *gin.Context) {
 // @Failure      400         {object}  map[string]interface{}
 // @Failure      409         {object}  map[string]interface{}
 // @Router       /user/add_friend [post]
-func (uc *UserController) AddFriend(c *gin.Context) {
+func (uc *UserHandler) AddFriend(c *gin.Context) {
 	var req dto.FriendsRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -82,7 +82,7 @@ func (uc *UserController) AddFriend(c *gin.Context) {
 // @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} map[string]interface{}
 // @Router       /user/remove_friend [post]
-func (uc *UserController) RemoveFriend(c *gin.Context) {
+func (uc *UserHandler) RemoveFriend(c *gin.Context) {
 	var req dto.FriendsRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
@@ -105,7 +105,7 @@ func (uc *UserController) RemoveFriend(c *gin.Context) {
 // @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} map[string]interface{}
 // @Router       /user/get_user [get]
-func (uc *UserController) GetUser(c *gin.Context) {
+func (uc *UserHandler) GetUser(c *gin.Context) {
 	userLogin := c.Query("login")
 	if userLogin == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "login query parameter is required"})
@@ -131,7 +131,7 @@ func (uc *UserController) GetUser(c *gin.Context) {
 // @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} map[string]interface{}
 // @Router       /user/delete [delete]
-func (uc *UserController) DeleteUser(c *gin.Context) {
+func (uc *UserHandler) DeleteUser(c *gin.Context) {
 	userLogin := c.Query("login")
 	if userLogin == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "login query parameter is required"})

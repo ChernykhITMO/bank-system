@@ -1,9 +1,14 @@
-package repostitory
+package repository
 
 import (
-	"bankSystem/model"
+	"bankSystem/internal/model"
 	"gorm.io/gorm"
 )
+
+type TransactionRepository interface {
+	SaveTransaction(tx *model.TransactionEntity) error
+	GetTransactionsByAccountId(accountId string) ([]model.TransactionEntity, error)
+}
 
 type PostgresTransactionRepository struct {
 	db *gorm.DB
