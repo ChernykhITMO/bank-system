@@ -1,10 +1,20 @@
 definitions:
+  constants.TransactionType:
+    enum:
+    - deposit
+    - withdraw
+    - transfer
+    type: string
+    x-enum-varnames:
+    - TransactionDeposit
+    - TransactionWithdraw
+    - TransactionTransfer
   domain.Transaction:
     properties:
       accountId:
         type: string
       action:
-        $ref: '#/definitions/enums.TransactionType'
+        $ref: '#/definitions/constants.TransactionType'
       amount:
         type: number
       id:
@@ -43,7 +53,7 @@ definitions:
     - id
     - login
     type: object
-  dto.DepWithRequest:
+  dto.DepositWithdrawRequest:
     properties:
       amount:
         type: number
@@ -76,16 +86,6 @@ definitions:
     - id1
     - id2
     type: object
-  enums.TransactionType:
-    enum:
-    - deposit
-    - withdraw
-    - transfer
-    type: string
-    x-enum-varnames:
-    - TransactionDeposit
-    - TransactionWithdraw
-    - TransactionTransfer
 host: localhost:8080
 info:
   contact: {}
@@ -187,7 +187,7 @@ paths:
         name: account
         required: true
         schema:
-          $ref: '#/definitions/dto.DepWithRequest'
+          $ref: '#/definitions/dto.DepositWithdrawRequest'
       produces:
       - application/json
       responses:
@@ -278,7 +278,7 @@ paths:
         name: account
         required: true
         schema:
-          $ref: '#/definitions/dto.DepWithRequest'
+          $ref: '#/definitions/dto.DepositWithdrawRequest'
       produces:
       - application/json
       responses:

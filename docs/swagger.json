@@ -152,7 +152,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.DepWithRequest"
+                            "$ref": "#/definitions/dto.DepositWithdrawRequest"
                         }
                     }
                 ],
@@ -289,7 +289,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.DepWithRequest"
+                            "$ref": "#/definitions/dto.DepositWithdrawRequest"
                         }
                     }
                 ],
@@ -526,6 +526,19 @@
         }
     },
     "definitions": {
+        "constants.TransactionType": {
+            "type": "string",
+            "enum": [
+                "deposit",
+                "withdraw",
+                "transfer"
+            ],
+            "x-enum-varnames": [
+                "TransactionDeposit",
+                "TransactionWithdraw",
+                "TransactionTransfer"
+            ]
+        },
         "domain.Transaction": {
             "type": "object",
             "properties": {
@@ -533,7 +546,7 @@
                     "type": "string"
                 },
                 "action": {
-                    "$ref": "#/definitions/enums.TransactionType"
+                    "$ref": "#/definitions/constants.TransactionType"
                 },
                 "amount": {
                     "type": "number"
@@ -592,7 +605,7 @@
                 }
             }
         },
-        "dto.DepWithRequest": {
+        "dto.DepositWithdrawRequest": {
             "type": "object",
             "required": [
                 "amount",
@@ -640,19 +653,6 @@
                     "type": "string"
                 }
             }
-        },
-        "enums.TransactionType": {
-            "type": "string",
-            "enum": [
-                "deposit",
-                "withdraw",
-                "transfer"
-            ],
-            "x-enum-varnames": [
-                "TransactionDeposit",
-                "TransactionWithdraw",
-                "TransactionTransfer"
-            ]
         }
     }
 }

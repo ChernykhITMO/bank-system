@@ -159,7 +159,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.DepWithRequest"
+                            "$ref": "#/definitions/dto.DepositWithdrawRequest"
                         }
                     }
                 ],
@@ -296,7 +296,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/dto.DepWithRequest"
+                            "$ref": "#/definitions/dto.DepositWithdrawRequest"
                         }
                     }
                 ],
@@ -533,6 +533,19 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "constants.TransactionType": {
+            "type": "string",
+            "enum": [
+                "deposit",
+                "withdraw",
+                "transfer"
+            ],
+            "x-enum-varnames": [
+                "TransactionDeposit",
+                "TransactionWithdraw",
+                "TransactionTransfer"
+            ]
+        },
         "domain.Transaction": {
             "type": "object",
             "properties": {
@@ -599,7 +612,7 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.DepWithRequest": {
+        "dto.DepositWithdrawRequest": {
             "type": "object",
             "required": [
                 "amount",
@@ -647,19 +660,6 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
-        },
-        "constants.TransactionType": {
-            "type": "string",
-            "enum": [
-                "deposit",
-                "withdraw",
-                "transfer"
-            ],
-            "x-enum-varnames": [
-                "TransactionDeposit",
-                "TransactionWithdraw",
-                "TransactionTransfer"
-            ]
         }
     }
 }`
