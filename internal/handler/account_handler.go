@@ -73,12 +73,12 @@ func (ac *AccountHandler) GetBalance(c *gin.Context) {
 // @Tags Account
 // @Accept json
 // @Produce      json
-// @Param        account  body      dto.DepWithRequest  true  "Deposited"
+// @Param        account  body      dto.DepositWithdrawRequest  true  "Deposited"
 // @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} map[string]interface{}
 // @Router /account/deposit [post]
 func (ac *AccountHandler) Deposit(c *gin.Context) {
-	var req dto.DepWithRequest
+	var req dto.DepositWithdrawRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
 		return
@@ -98,12 +98,12 @@ func (ac *AccountHandler) Deposit(c *gin.Context) {
 // @Tags Account
 // @Accept json
 // @Produce      json
-// @Param        account  body      dto.DepWithRequest  true  "Deposited"
+// @Param        account  body      dto.DepositWithdrawRequest  true  "Deposited"
 // @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} map[string]interface{}
 // @Router /account/withdraw [post]
 func (ac *AccountHandler) Withdraw(c *gin.Context) {
-	var req dto.DepWithRequest
+	var req dto.DepositWithdrawRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
 		return
