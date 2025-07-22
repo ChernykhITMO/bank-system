@@ -1,13 +1,13 @@
-FROM golang:1.21
+FROM golang:1.23
 
 WORKDIR /bankSystem
 
 COPY go.mod go.sum ./
 
-RUN go.mod download
+RUN go mod download
 
 COPY . .
 
-RUN go build -o main .
+RUN go build -o main ./cmd
 
 CMD ["./main"]
