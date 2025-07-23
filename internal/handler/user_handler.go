@@ -70,7 +70,7 @@ func (uc *UserHandler) AddFriend(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "users are friends"})
+	c.JSON(http.StatusAccepted, gin.H{"message": "users are friends"})
 }
 
 // @Summary      Delete user's friend
@@ -93,7 +93,7 @@ func (uc *UserHandler) RemoveFriend(c *gin.Context) {
 		c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "users have deleted"})
+	c.JSON(http.StatusAccepted, gin.H{"message": "users have deleted"})
 }
 
 // @Summary      Get user

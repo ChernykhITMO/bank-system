@@ -60,7 +60,7 @@ func (ac *AccountHandler) GetBalance(c *gin.Context) {
 
 	balance, err := ac.accountService.GetBalance(id)
 	if err != nil {
-		c.JSON(http.StatusNoContent, gin.H{"error": err.Error()})
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -89,7 +89,7 @@ func (ac *AccountHandler) Deposit(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Account replenished"})
+	c.JSON(http.StatusAccepted, gin.H{"message": "Account replenished"})
 	return
 }
 
@@ -114,7 +114,7 @@ func (ac *AccountHandler) Withdraw(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Money has been withdrawn"})
+	c.JSON(http.StatusAccepted, gin.H{"message": "Money has been withdrawn"})
 	return
 }
 
@@ -139,7 +139,7 @@ func (ac *AccountHandler) Transfer(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Money has been withdrawn"})
+	c.JSON(http.StatusAccepted, gin.H{"message": "Money has been withdrawn"})
 	return
 }
 
@@ -164,7 +164,7 @@ func (ac *AccountHandler) DeleteAccount(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Account was deleted"})
+	c.JSON(http.StatusAccepted, gin.H{"message": "Account was deleted"})
 	return
 }
 

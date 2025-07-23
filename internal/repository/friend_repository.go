@@ -8,35 +8,33 @@ import (
 )
 
 type FriendRepository interface {
-	AddFriends(user, friend string) error
-	RemoveFriend(user, friend string) error
-	AreFriends(user, friend string) (bool, error)
-	GetFriends(login string) ([]string, error)
+	AddFriends(db *gorm.DB, user, friend string) error
+	RemoveFriend(db *gorm.DB, user, friend string) error
+	AreFriends(db *gorm.DB, user, friend string) (bool, error)
+	GetFriends(db *gorm.DB, login string) ([]string, error)
 }
 
-type PostgresFriendRepository struct {
-	db *gorm.DB
+type PostgresFriendRepository struct{}
+
+func NewPostgresFriendRepository() FriendRepository {
+	return &PostgresFriendRepository{}
 }
 
-func NewPostgresFriendRepository(db *gorm.DB) *PostgresFriendRepository {
-	return &PostgresFriendRepository{db: db}
-}
-
-func (r *PostgresFriendRepository) AddFriends(user, friend string) error {
-	return r.db.Create(&model.FriendsEntity{
+func (r *PostgresFriendRepository) AddFriends(db *gorm.DB, user, friend string) error {
+	return db.Create(&model.FriendsEntity{
 		UserLogin:   user,
 		FriendLogin: friend,
 		CreatedAt:   time.Now(),
 	}).Error
 }
 
-func (r *PostgresFriendRepository) RemoveFriend(user, friend string) error {
-	return r.db.Delete(&model.FriendsEntity{}, "user_login = ? AND friends_login = ?", user, friend).Error
+func (r *PostgresFriendRepository) RemoveFriend(db *gorm.DB, user, friend string) error {
+	return db.Delete(&model.FriendsEntity{}, "user_login = ? AND friends_login = ?", user, friend).Error
 }
 
-func (r *PostgresFriendRepository) AreFriends(user, friend string) (bool, error) {
+func (r *PostgresFriendRepository) AreFriends(db *gorm.DB, user, friend string) (bool, error) {
 	var f model.FriendsEntity
-	err := r.db.First(&f, "user_login = ? AND friend_login = ?", user, friend).Error
+	err := db.First(&f, "user_login = ? AND friend_login = ?", user, friend).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return false, nil
@@ -46,9 +44,9 @@ func (r *PostgresFriendRepository) AreFriends(user, friend string) (bool, error)
 	return true, nil
 }
 
-func (r *PostgresFriendRepository) GetFriends(login string) ([]string, error) {
+func (r *PostgresFriendRepository) GetFriends(db *gorm.DB, login string) ([]string, error) {
 	var rows []model.FriendsEntity
-	err := r.db.Where("user_login = ?", login).Find(&rows).Error
+	err := db.Where("user_login = ?", login).Find(&rows).Error
 	if err != nil {
 		return nil, err
 	}

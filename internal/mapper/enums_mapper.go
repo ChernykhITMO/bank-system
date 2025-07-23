@@ -1,32 +1,32 @@
 package mapper
 
 import (
-	enums2 "bankSystem/internal/domain/constants"
+	"bankSystem/internal/domain/constants"
 	"fmt"
 	"strings"
 )
 
-func StringToEnum(sex, hair string) (enums2.Sex, enums2.Color, error) {
+func StringToEnum(sex, hair string) (constants.Sex, constants.Color, error) {
 	sexLower := strings.ToLower(sex)
 	hairLower := strings.ToLower(hair)
 
-	var sexEnum enums2.Sex
-	var hairEnum enums2.Color
+	var sexEnum constants.Sex
+	var hairEnum constants.Color
 
 	switch sexLower {
 	case "male":
-		sexEnum = enums2.SexMale
+		sexEnum = constants.SexMale
 	case "female":
-		sexEnum = enums2.SexFemale
+		sexEnum = constants.SexFemale
 	default:
 		return "", "", fmt.Errorf("invalid sex: %s", sex)
 	}
 
 	switch hairLower {
 	case "black":
-		hairEnum = enums2.ColorBlack
+		hairEnum = constants.ColorBlack
 	case "white":
-		hairEnum = enums2.ColorWhite
+		hairEnum = constants.ColorWhite
 	default:
 		return "", "", fmt.Errorf("invalid hair color: %s", hair)
 	}

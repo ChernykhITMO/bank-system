@@ -6,39 +6,30 @@ import (
 )
 
 type AccountRepository interface {
-	GetAccount(id string) (*model2.AccountEntity, error)
-	SaveAccount(account *model2.AccountEntity) error
-	DeleteAccount(id string) error
+	GetAccount(db *gorm.DB, id string) (*model2.AccountEntity, error)
+	SaveAccount(db *gorm.DB, account *model2.AccountEntity) error
+	DeleteAccount(db *gorm.DB, id string) error
 }
 
-type PostgresAccountRepository struct {
-	db *gorm.DB
+type PostgresAccountRepository struct{}
+
+func NewPostgresAccountRepository() AccountRepository {
+	return &PostgresAccountRepository{}
 }
 
-func NewPostgresAccountRepository(db *gorm.DB) *PostgresAccountRepository {
-	return &PostgresAccountRepository{db: db}
-}
-
-func (r *PostgresAccountRepository) GetAccount(id string) (*model2.AccountEntity, error) {
+func (r *PostgresAccountRepository) GetAccount(db *gorm.DB, id string) (*model2.AccountEntity, error) {
 	var account model2.AccountEntity
-	if err := r.db.Where("id = ?", id).First(&account).Error; err != nil {
+	if err := db.Where("id = ?", id).First(&account).Error; err != nil {
 		return nil, err
 	}
 
 	return &account, nil
 }
 
-func (r *PostgresAccountRepository) SaveAccount(account *model2.AccountEntity) error {
-	return r.db.Save(account).Error
+func (r *PostgresAccountRepository) SaveAccount(db *gorm.DB, account *model2.AccountEntity) error {
+	return db.Save(account).Error
 }
 
-func (r *PostgresAccountRepository) DeleteAccount(id string) error {
-	if err := r.db.Where("account_id = ?", id).Delete(&model2.TransactionEntity{}).Error; err != nil {
-		return err
-	}
-
-	if err := r.db.Delete(&model2.AccountEntity{}, "id = ?", id).Error; err != nil {
-		return err
-	}
-	return nil
+func (r *PostgresAccountRepository) DeleteAccount(db *gorm.DB, id string) error {
+	return db.Delete(&model2.AccountEntity{}, "id = ?", id).Error
 }

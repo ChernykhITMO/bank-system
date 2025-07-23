@@ -5,8 +5,8 @@ import (
 )
 
 type Transaction struct {
-	Id        string
-	Action    constants.TransactionType
-	Amount    float64
-	AccountId string
+	Id              string
+	TransactionType constants.TransactionType
+	Amount          float64
+	AccountId       string
 }

@@ -6,24 +6,20 @@ import (
 )
 
 type UserRepository interface {
-	GetUser(login string) (*model.UserEntity, error)
-	SaveUser(user *model.UserEntity) error
-	DeleteUser(user *model.UserEntity) error
+	GetUser(db *gorm.DB, login string) (*model.UserEntity, error)
+	SaveUser(db *gorm.DB, user *model.UserEntity) error
+	DeleteUser(db *gorm.DB, user *model.UserEntity) error
 }
 
-type PostgresUserRepository struct {
-	db *gorm.DB
+type PostgresUserRepository struct{}
+
+func NewPostgresUserRepository() UserRepository {
+	return &PostgresUserRepository{}
 }
 
-func NewPostgresUserRepository(dataBase *gorm.DB) *PostgresUserRepository {
-	return &PostgresUserRepository{
-		db: dataBase,
-	}
-}
-
-func (r *PostgresUserRepository) GetUser(login string) (*model.UserEntity, error) {
+func (r *PostgresUserRepository) GetUser(db *gorm.DB, login string) (*model.UserEntity, error) {
 	var user model.UserEntity
-	if err := r.db.
+	if err := db.
 		Preload("Friends").
 		Preload("Accounts").
 		Where("login = ?", login).
@@ -34,10 +30,10 @@ func (r *PostgresUserRepository) GetUser(login string) (*model.UserEntity, error
 	return &user, nil
 }
 
-func (r *PostgresUserRepository) SaveUser(user *model.UserEntity) error {
-	return r.db.Save(&user).Error
+func (r *PostgresUserRepository) SaveUser(db *gorm.DB, user *model.UserEntity) error {
+	return db.Save(&user).Error
 }
 
-func (r *PostgresUserRepository) DeleteUser(user *model.UserEntity) error {
-	return r.db.Delete(&user).Error
+func (r *PostgresUserRepository) DeleteUser(db *gorm.DB, user *model.UserEntity) error {
+	return db.Delete(&user).Error
 }

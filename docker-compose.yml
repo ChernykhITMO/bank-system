@@ -23,14 +23,10 @@ services:
       - "8080:8080"
     depends_on:
       - db
+    restart: on-failure
 
     environment:
-      DB_SOURCE: "postgresql://user:password@db:5432/bank_system?sslmode=disable"
-
-
-
-
-
+      DB_SOURCE: ${DB_URL}
 volumes:
   pg_data:
 

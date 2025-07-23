@@ -15,7 +15,26 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 )
+
+func connectWithRetry(dsn string, maxAttempts int) *gorm.DB {
+	var db *gorm.DB
+	var err error
+
+	for i := 1; i <= maxAttempts; i++ {
+		db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+		if err == nil {
+			log.Println("✅ Connected to DB")
+			return db
+		}
+		log.Printf("⏳ Attempt %d: failed to connect to DB: %v", i, err)
+		time.Sleep(2 * time.Second)
+	}
+
+	log.Fatalf("❌ Could not connect to DB after %d attempts: %v", maxAttempts, err)
+	return nil
+}
 
 // @title Bank System API
 // @version 1.0
@@ -28,18 +47,28 @@ func main() {
 	}
 
 	dbURL := os.Getenv("DB_URL")
-	db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{})
-	if err != nil {
-		log.Fatal("Failed to connect to DB:", err)
-	}
-	db.AutoMigrate(&model.UserEntity{}, &model.AccountEntity{}, &model.FriendsEntity{}, &model.TransactionEntity{})
+	db := connectWithRetry(dbURL, 10)
 
-	userRepo := repository.NewPostgresUserRepository(db)
-	accountRepo := repository.NewPostgresAccountRepository(db)
-	friendRepo := repository.NewPostgresFriendRepository(db)
-	transactionRepo := repository.NewPostgresTransactionRepository(db)
-	userService := service.NewUserService(userRepo, friendRepo)
-	accountService := service.NewAccountService(accountRepo, userRepo, friendRepo, transactionRepo)
+	err := db.AutoMigrate(
+		&model.UserEntity{},
+		&model.AccountEntity{},
+		&model.FriendsEntity{},
+		&model.TransactionEntity{})
+
+	if err != nil {
+		log.Fatal("Migration failed:", err)
+	}
+
+	txManager := repository.NewGormTxManager(db)
+
+	userRepo := repository.NewPostgresUserRepository()
+	accountRepo := repository.NewPostgresAccountRepository()
+	friendRepo := repository.NewPostgresFriendRepository()
+	transactionRepo := repository.NewPostgresTransactionRepository()
+
+	userService := service.NewUserService(txManager, userRepo, friendRepo)
+	accountService := service.NewAccountService(txManager, accountRepo, userRepo, friendRepo, transactionRepo)
+
 	userController := handlers.NewUserController(userService)
 	accountController := handlers.NewAccountController(accountService)
 
